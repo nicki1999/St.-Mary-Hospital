@@ -28,7 +28,8 @@
   from js import console, document, sub_category
   from pyodide.ffi.wrappers import add_event_listener
   from pyodide.ffi import create_proxy
-  from pyodide.ffi import create_proxy
+  from pyodide.http import open_url
+  
   import pandas as pd
   import os
 
@@ -106,6 +107,7 @@
 
 
 
+      <!--
       <table class="striped responsive-table centered ">
         <thead>
           <tr>
@@ -133,6 +135,11 @@
           </tr>
         </tbody>
       </table>
+      -->
+
+      <div id="output_area">
+        
+      </div>
       </div>
     <!--JavaScript at end of body for optimized loading-->
     <script type="text/javascript" src="js/materialize.min.js"></script>
@@ -252,13 +259,11 @@ def sub_sub_category():
       element.addEventListener("change", sub_procedure_elements_proxy)
   
   def show_data():
-    #os.chdir('C:/Desktop/github/St.-Mary-Hospital/')
-    print(os.getcwd())
-    let zipResponse = await fetch("output_5.csv.zip")
-    let zipBinary = await zipResponse.arrayBuffer()
-    pyodide.unpackArchive(zipBinary, "zip")
-    df = pd.read_csv("./output_5.csv")
-    pyscript.write('data', df.head())
+    url = "https://raw.githubusercontent.com/nicki1999/St.-Mary-Hospital/main/output_5.csv"
+    df = pd.read_csv(open_url(url))
+    print(df.head)
+    pyscript.display(df, target="output_area")
+
 
 </py-script>
   </body>

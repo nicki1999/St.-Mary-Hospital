@@ -1,3 +1,6 @@
 .wrapper{
     padding: 10 60 10 60;
 }
+th{
+    text-align: left !important;
+}

@@ -1,0 +1,268 @@
+<html>
+  <head>
+      <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+  <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+      <py-config>
+                    packages = [
+                      "pandas",
+                    ]
+      </py-config>
+    <link rel="stylesheet" href="./style.css">
+
+
+  </head>
+  
+  <body>
+      <div class = "wrapper">
+
+
+<py-script>
+  from js import console, document, sub_category
+  from pyodide.ffi.wrappers import add_event_listener
+  from pyodide.ffi import create_proxy
+  from pyodide.ffi import create_proxy
+  import pandas as pd
+  import os
+
+  main_procedure_type = ''
+  main_procedure_elements = js.document.getElementsByName("main_procedure")
+
+  def select_main_procedure(event):
+    for element in main_procedure_elements:
+        if element.checked:
+          if element.value == 'Arthroplasty':
+             sub_category(1)
+          elif element.value == 'Sports Medicine':
+             sub_category(2)
+          elif element.value == 'Foot and Ankle':
+             sub_category(3)
+          inputElements = document.getElementsByClassName("sub-category-input")
+          for ele in inputElements:
+              print(ele.value)
+
+  main_procedure_elements_proxy = create_proxy(select_main_procedure)
+
+  for element in main_procedure_elements:
+      element.addEventListener("change", main_procedure_elements_proxy)
+
+  if main_procedure_type != '':
+    print("main_procedure_type")
+</py-script>
+    <!--Ask the procedure-->
+    <h4>Select a main procedure category</h4>
+    <br>
+    <!--Select the main procedure type-->
+      <form action="#" method="get">
+    <p>
+      <label>
+        <input class="with-gap" name="main_procedure" type="radio" value = "Arthroplasty" />
+        <span class='black-text'>Arthroplasty</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input class="with-gap" name="main_procedure" type="radio" value = "Sports Medicine" />
+        <span class='black-text'>Sports Medicine</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input class="with-gap" name="main_procedure" type="radio" value="Foot and Ankle" />
+        <span class='black-text'>Foot and Ankle</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input class="with-gap" name="main_procedure" type="radio"  value="Minor Procedures"/>
+        <span class='black-text'>Minor Procedures</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input class="with-gap" name="main_procedure" type="radio" value ="Other Procedures" />
+        <span class='black-text'>Other Procedures</span>
+      </label>
+    </p>
+  </form>
+
+<br>
+    <!--Select subcategory-->
+    <h4>Select a sub procedure category</h4>
+    <br>
+    <!--Arthroplasty sub category-->
+      <form action="#" method="get" id="sub-category">
+      </form>
+
+
+
+
+
+
+      <table class="striped responsive-table centered ">
+        <thead>
+          <tr>
+              <th>Name</th>
+              <th>Item Name</th>
+              <th>Item Price</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Alvin</td>
+            <td>Eclair</td>
+            <td>$0.87</td>
+          </tr>
+          <tr>
+            <td>Alan</td>
+            <td>Jellybean</td>
+            <td>$3.76</td>
+          </tr>
+          <tr>
+            <td>Jonathan</td>
+            <td>Lollipop</td>
+            <td>$7.00</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script>
+function sub_category(type_number)
+{
+    // Get the element by its ID
+const container = document.getElementById("sub-category");
+// Define an array of objects, each with a different value and text
+if (type_number == 1)
+{
+values = [
+  {value: 'Knee Replacement'},
+  {value: 'Shoulder Replacement'},
+  {value: 'Hip Replacement'},
+  {value: 'Ankle Replacement'},
+  {value: 'Elbow Replacement'},
+];
+}
+else if (type_number == 2)
+{
+values = [
+  {value: 'Sports Shoulder'},
+  {value: 'Sports Hip'},
+  {value: 'Sports Knee'},
+];
+}
+else if (type_number == 3)
+{
+values = [
+  {value: 'Forefoot	'},
+  {value: 'Hindfoot'},
+  {value: 'Ankle'},
+];
+}
+// Create the HTML markup for the elements with different values and text for each
+const elementsHTML = values.map((val, index) => `
+  <p>
+    <label>
+      <input class="with-gap sub-category-input" name="sub_procedure" type="radio" value="${val.value}" />
+      <span class='black-text'>${val.value}</span>
+    </label>
+  </p>
+`).join('');
+
+// Set the contents of the container element to the HTML markup
+container.innerHTML = elementsHTML;
+
+/*for (let i = 0; i < values.length; i++) {
+  alert(values[i].value);
+}*/
+
+//alert(pyscript.interpreter.globals.get('sub_sub_category()'))
+const sub_sub_category = pyscript.interpreter.globals.get('sub_sub_category');
+sub_sub_category()
+}
+
+
+function sub_sub_category(type)
+{
+  if(type == "Arthroplasty_Knee_Replacement"){
+    values = [
+  {value: 'Total Knee Replacement'},
+  {value: 'Partial Knee Replacement'},
+];
+  }
+
+  else if (type == "Arthroplasty_Shoulder_Replacement")
+  {
+
+  }
+
+  else if(type == "Sports_Medicine_Sports_Shoulder"){
+    values = [
+  {value: 'Shoulder Instability/Repair'},
+  {value: 'Shoulder Rotator Cuff'},
+];
+  }
+  else if(type == "Sports_Medicine_Sports_Hip"){
+    values = [
+  {value: 'Shoulder Instability/Repair'},
+  {value: 'Shoulder Rotator Cuff'},
+];
+  }
+
+  // Create the HTML markup for the elements with different values and text for each
+const elementsHTML = values.map((val, index) => `
+  <p>
+    <label>
+      <input class="with-gap sub-category-input" name="sub_procedure" type="radio" value="${val.value}" />
+      <span class='black-text'>${val.value}</span>
+    </label>
+  </p>
+`).join('');
+
+// Set the contents of the container element to the HTML markup
+container.innerHTML = elementsHTML;
+}
+
+
+</script>
+
+<py-script>
+def sub_sub_category():
+  sub_procedure_elements = js.document.getElementsByName("sub_procedure")
+
+  def select_sub_sub_procedure(event):
+      for element in sub_procedure_elements:
+      # This is for Arthroplasty
+          if element.checked:
+             if element.value == 'Shoulder Replacement':
+                show_data()
+  
+  sub_procedure_elements_proxy = create_proxy(select_sub_sub_procedure)
+
+  for element in sub_procedure_elements:
+      element.addEventListener("change", sub_procedure_elements_proxy)
+  
+  def show_data():
+    #os.chdir('C:/Desktop/github/St.-Mary-Hospital/')
+    print(os.getcwd())
+    let zipResponse = await fetch("output_5.csv.zip")
+    let zipBinary = await zipResponse.arrayBuffer()
+    pyodide.unpackArchive(zipBinary, "zip")
+    df = pd.read_csv("./output_5.csv")
+    pyscript.write('data', df.head())
+
+</py-script>
+  </body>
+</html>
+
+
+

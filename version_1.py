@@ -1,7 +1,10 @@
 import tabula
 import os
 import pandas as pd
-import numpy as np
+import datetime
+import sys
+from PyQt5.QtWidgets import QApplication
+from user_interface import UserInterface
 
 # clear the terminal
 os.system('cls' if os.name == 'nt' else 'clear')
@@ -71,15 +74,26 @@ df = df.rename(columns={'Procedure, localization, technique': 'Procedure'})
 # convert the 'date' column to datetime format
 df['Entered'] = pd.to_datetime(df['Entered'])
 
-# filter the dataframe to only include dates after 2022-01-02
-filtered_df = df[df['Entered'] > '2022-04-30']
-print(len(filtered_df))
+# this month and day last year
+current_year = datetime.datetime.now().year - 1
+current_month = datetime.datetime.now().month
+current_day = datetime.datetime.now().day
+current_time_str = datetime.datetime(current_year, current_month, current_day).strftime('%Y-%m-%d')
 
+print('1 year ago is: ',current_time_str)
+
+# filter the dataframe to only include dates after 1 year ago
+filtered_df = df[df['Entered'] > current_time_str]
 
 #print(df.columns.values)
-#df.to_csv('./output_5.csv', index=False)
+filtered_df.to_csv('./output_5.csv', index=False)
+#----------------------DONE formatting the data-----------------------------------------
 
-
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    win = UserInterface(filtered_df)
+    win.show()
+    sys.exit(app.exec_())
 
 
 

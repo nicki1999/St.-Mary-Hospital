@@ -261,7 +261,7 @@ def sub_sub_category():
   def show_data():
     url = "https://raw.githubusercontent.com/nicki1999/St.-Mary-Hospital/main/output_5.csv"
     df = pd.read_csv(open_url(url))
-    print(df.head)
+    pd.set_option("display.max_rows", None)
     pyscript.display(df, target="output_area")
 
 

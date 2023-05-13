@@ -19,9 +19,22 @@ pdf_path_2pages = './service_orthopedics_specialty_orthopedics-2.pdf'
 # Create an empty list to store the data frames for each page
 dfs = []
 
+
+all_pages = tabula.read_pdf(pdf_path_all, pages='all')
+# with open(pdf_path_all, 'rb') as pdf_file:
+#     pdf_reader = PyPDF2.PdfReader(pdf_file)
+#     num_pages = len(pdf_reader.pages)
+#         # Get the text of the last page in the PDF file
+#     last_page_text = pdf_reader.pages[num_pages-1].extract_text()
+
+#     # Print the extracted text
+#     print(last_page_text)
+
+
+
 # Iterate over each page of the PDF and append the data frame to the list
 delay_time = []
-for page in range(1, len(tabula.read_pdf(pdf_path_all, pages='all'))+1):
+for page in range(1, len(all_pages)+1):
     tables = tabula.read_pdf(pdf_path_all, pages=page, multiple_tables=True)
     if page == 1:
         df = pd.concat(tables, ignore_index=True)
@@ -86,7 +99,7 @@ print('1 year ago is: ',current_time_str)
 filtered_df = df[df['Entered'] > current_time_str]
 
 #print(df.columns.values)
-filtered_df.to_csv('./output_5.csv', index=False)
+df.to_csv('./output_5.csv', index=False)
 #----------------------DONE formatting the data-----------------------------------------
 
 if __name__ == '__main__':

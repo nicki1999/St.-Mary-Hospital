@@ -99,7 +99,7 @@ print('1 year ago is: ',current_time_str)
 filtered_df = df[df['Entered'] > current_time_str]
 
 #print(df.columns.values)
-df.to_csv('./output_5.csv', index=False)
+filtered_df.to_csv('./output_5.csv', index=False)
 #----------------------DONE formatting the data-----------------------------------------
 
 if __name__ == '__main__':

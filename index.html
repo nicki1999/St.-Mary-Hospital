@@ -107,35 +107,11 @@
 
 
 
-      <!--
-      <table class="striped responsive-table centered ">
-        <thead>
-          <tr>
-              <th>Name</th>
-              <th>Item Name</th>
-              <th>Item Price</th>
-          </tr>
-        </thead>
+      
+      <table class="striped responsive-table centered " id = "table-container">
 
-        <tbody>
-          <tr>
-            <td>Alvin</td>
-            <td>Eclair</td>
-            <td>$0.87</td>
-          </tr>
-          <tr>
-            <td>Alan</td>
-            <td>Jellybean</td>
-            <td>$3.76</td>
-          </tr>
-          <tr>
-            <td>Jonathan</td>
-            <td>Lollipop</td>
-            <td>$7.00</td>
-          </tr>
-        </tbody>
       </table>
-      -->
+      
 
       <div id="output_area">
         
@@ -198,6 +174,8 @@ sub_sub_category()
 }
 
 
+
+
 function sub_sub_category(type)
 {
   if(type == "Arthroplasty_Knee_Replacement"){
@@ -240,12 +218,76 @@ container.innerHTML = elementsHTML;
 }
 
 
+
+function generateTable(rows, columns) {
+  // Get the HTML element where we want to append the table
+  const tableContainer = document.getElementById('table-container');
+
+  // Create a new table element
+  const table = document.createElement('table');
+
+  // Create the first row and merge all the cells
+  const titleRow = document.createElement('tr');
+  const titleCell = document.createElement('td');
+  titleCell.setAttribute('colspan', columns * 3);
+  titleCell.style.textAlign = 'center'; // Center the text
+  const titleText = document.createTextNode('Table Title');
+  const boldText = document.createElement('strong'); // Create a <strong> element
+  boldText.appendChild(titleText);
+  titleCell.appendChild(boldText);
+  titleRow.appendChild(titleCell);
+  table.appendChild(titleRow);
+
+  // Create the second row with n cells
+  const secondRow = document.createElement('tr'); 
+  for (let j = 0; j < columns; j++) {
+    const cell = document.createElement('td');
+    cell.setAttribute('colspan',columns);
+    cell.style.textAlign = 'center';
+    const cellText = document.createTextNode(`Row 2, Column ${j+1}`);
+    cell.appendChild(cellText);
+    secondRow.appendChild(cell);
+  }
+  table.appendChild(secondRow);
+
+  // Loop through the rows starting from the third row
+  for (let i = 2; i < rows; i++) {
+    // Create a new row element
+    const row = document.createElement('tr');
+
+    // Loop through the columns * 3
+    for (let j = 0; j < columns * 3; j++) {
+      // Create a new cell element
+      const cell = document.createElement('td');
+      
+      // Add some text to the cell
+      const cellText = document.createTextNode(`Row ${i+1}, Column ${j+1}`);
+      cell.appendChild(cellText);
+
+      // Add the cell to the row
+      row.appendChild(cell);
+    }
+
+    // Add the row to the table
+    table.appendChild(row);
+  }
+
+  // Add the table to the container
+  tableContainer.appendChild(table);
+}
+
+
 </script>
 
 <py-script>
+from js import generateTable
+# I already have the csv file
 def sub_sub_category():
   sub_procedure_elements = js.document.getElementsByName("sub_procedure")
-
+  url = "https://raw.githubusercontent.com/nicki1999/St.-Mary-Hospital/main/output_5.csv"
+  df = pd.read_csv(open_url(url))
+  surgeons = df['Surgeon'].unique()
+  print(surgeons)
   def select_sub_sub_procedure(event):
       for element in sub_procedure_elements:
       # This is for Arthroplasty
@@ -257,12 +299,12 @@ def sub_sub_category():
 
   for element in sub_procedure_elements:
       element.addEventListener("change", sub_procedure_elements_proxy)
-  
+
   def show_data():
-    url = "https://raw.githubusercontent.com/nicki1999/St.-Mary-Hospital/main/output_5.csv"
-    df = pd.read_csv(open_url(url))
-    pd.set_option("display.max_rows", None)
-    pyscript.display(df, target="output_area")
+  # show all the rows
+    #pd.set_option("display.max_rows", None)
+    #pyscript.display(df, target="output_area")
+    generateTable(len(surgeons),3)
 
 
 </py-script>

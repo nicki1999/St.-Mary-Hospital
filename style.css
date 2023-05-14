@@ -4,3 +4,15 @@
 th{
     text-align: left !important;
 }
+
+table {
+    width: 100%;
+  }
+
+table tr:nth-child(2)>td {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid black;
+    
+  }
+  

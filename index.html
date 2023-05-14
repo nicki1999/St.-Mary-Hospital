@@ -29,7 +29,7 @@
   from pyodide.ffi.wrappers import add_event_listener
   from pyodide.ffi import create_proxy
   from pyodide.http import open_url
-  
+  import numpy as np
   import pandas as pd
   import os
 
@@ -219,7 +219,11 @@ container.innerHTML = elementsHTML;
 
 
 
-function generateTable(rows, columns) {
+function generateTable(rows,columns ,surgeons) {
+  //covert python array to js array
+  var js_surgeons = Array.from(surgeons)
+
+
   // Get the HTML element where we want to append the table
   const tableContainer = document.getElementById('table-container');
 
@@ -250,27 +254,34 @@ function generateTable(rows, columns) {
   }
   table.appendChild(secondRow);
 
-  // Loop through the rows starting from the third row
-  for (let i = 2; i < rows; i++) {
-    // Create a new row element
-    const row = document.createElement('tr');
+  // Create the 3rd row onwards
+for (let i = 2; i < rows; i++) {
+  // Create a new row element
+  const row = document.createElement('tr');
 
-    // Loop through the columns * 3
-    for (let j = 0; j < columns * 3; j++) {
-      // Create a new cell element
-      const cell = document.createElement('td');
-      
-      // Add some text to the cell
-      const cellText = document.createTextNode(`Row ${i+1}, Column ${j+1}`);
-      cell.appendChild(cellText);
+  // Create the first cell element with the surgeon's name
+  const firstCell = document.createElement('td');
+  const cellText = document.createTextNode(`${js_surgeons[i-2]}`);
+  firstCell.appendChild(cellText);
+  row.appendChild(firstCell);
 
-      // Add the cell to the row
-      row.appendChild(cell);
-    }
+  // Loop through the remaining columns * 3
+  for (let j = 1; j < columns * 3; j++) {
+    // Create a new cell element
+    const cell = document.createElement('td');
+  
+    // Add some text to the cell
+    const cellText = document.createTextNode(`Row ${i+1}, Column ${j+1}`);
+    cell.appendChild(cellText);
 
-    // Add the row to the table
-    table.appendChild(row);
+    // Add the cell to the row
+    row.appendChild(cell);
   }
+
+  // Add the row to the table
+  table.appendChild(row);
+}
+
 
   // Add the table to the container
   tableContainer.appendChild(table);
@@ -287,6 +298,7 @@ def sub_sub_category():
   url = "https://raw.githubusercontent.com/nicki1999/St.-Mary-Hospital/main/output_5.csv"
   df = pd.read_csv(open_url(url))
   surgeons = df['Surgeon'].unique()
+  #surgeons = np.array(surgeons).tolist()
   print(surgeons)
   def select_sub_sub_procedure(event):
       for element in sub_procedure_elements:
@@ -304,9 +316,7 @@ def sub_sub_category():
   # show all the rows
     #pd.set_option("display.max_rows", None)
     #pyscript.display(df, target="output_area")
-    generateTable(len(surgeons),3)
-
-
+    generateTable(len(surgeons)+2,3,surgeons)
 </py-script>
   </body>
 </html>

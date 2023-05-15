@@ -1,25 +1,7 @@
-/*const mainProceduresRadioButtons = document.getElementsByName('main_procedure');
-mainProcedureType = ''
-mainProceduresRadioButtons.forEach(radioButton => {
-  radioButton.addEventListener('click', () => {
-    let checkedValue;
+const obj = { a: 1, b: 2, c: 3 };
+const keys = Object.getOwnPropertyNames(obj);
 
-    mainProceduresRadioButtons.forEach(radioButton => {
-      if (radioButton.checked) {
-        checkedValue = radioButton.value;
-      }
-    });
-
-    if (checkedValue) {
-
-      mainProcedureType = checkedValue
-      console.log(`The radio button with value ${mainProcedureType} was checked.`);
-    } 
-  });
+keys.forEach(key => {
+  console.log(key);              // Output: a, b, c
+  console.log(obj[key]);         // Output: 1, 2, 3
 });
-*/
-
-function arthroplasty()
-{
-    alert('Hi there!');
-}

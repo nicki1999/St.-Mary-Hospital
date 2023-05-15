@@ -219,11 +219,18 @@ container.innerHTML = elementsHTML;
 
 
 
-function generateTable(rows,columns ,surgeons) {
+function generateTable(rows,columns ,surgeons, sub_sub_sub_value, df_surgeon) {
+
   //covert python array to js array
-  var js_surgeons = Array.from(surgeons)
+  var js_surgeons = Array.from(surgeons);
 
-
+  //sub_sub_sub_value
+  var js_sub_sub_sub_value = Array.from(sub_sub_sub_value);
+const keys = Object.getOwnPropertyNames(df_surgeon);
+keys.forEach(key => {
+  console.log(key);              // Output: a, b, c
+  //console.log(obj[key]);         // Output: 1, 2, 3
+});
   // Get the HTML element where we want to append the table
   const tableContainer = document.getElementById('table-container');
 
@@ -244,9 +251,20 @@ function generateTable(rows,columns ,surgeons) {
 
   // Create the second row with n cells
   const secondRow = document.createElement('tr'); 
+  
+
+  // Add a new cell at the beginning of the row called surgeons
+const newCell = document.createElement('td');
+newCell.setAttribute('colspan', 1);
+newCell.style.textAlign = 'center';
+const newCellText = document.createTextNode('Surgeon');
+newCell.appendChild(newCellText);
+secondRow.appendChild(newCell);
+
+// this is the second row
   for (let j = 0; j < columns; j++) {
     const cell = document.createElement('td');
-    cell.setAttribute('colspan',columns);
+    cell.setAttribute('colspan',3);
     cell.style.textAlign = 'center';
     const cellText = document.createTextNode(`Row 2, Column ${j+1}`);
     cell.appendChild(cellText);
@@ -266,7 +284,7 @@ for (let i = 2; i < rows; i++) {
   row.appendChild(firstCell);
 
   // Loop through the remaining columns * 3
-  for (let j = 1; j < columns * 3; j++) {
+  for (let j = 1; j < (columns * 3)+1; j++) {
     // Create a new cell element
     const cell = document.createElement('td');
   
@@ -298,25 +316,30 @@ def sub_sub_category():
   url = "https://raw.githubusercontent.com/nicki1999/St.-Mary-Hospital/main/output_5.csv"
   df = pd.read_csv(open_url(url))
   surgeons = df['Surgeon'].unique()
+  df_surgeon = {}
+  for surgeon in surgeons:
+      df_surgeon[surgeon] = df[df['Surgeon'] == surgeon]
+  # this is how to access each surgeon's information
+  #print(df_surgeon['Stephenson P'])
   #surgeons = np.array(surgeons).tolist()
-  print(surgeons)
   def select_sub_sub_procedure(event):
       for element in sub_procedure_elements:
       # This is for Arthroplasty
           if element.checked:
              if element.value == 'Shoulder Replacement':
-                show_data()
+                sub_sub_sub_value = ['Total Shoulder Replacement Reverse Right', 'Total Shoulder Replacement Reverse Left','Total Shoulder Procedure Left', 'Total Shoulder Procedure Right' ]
+                show_data(sub_sub_sub_value)
   
   sub_procedure_elements_proxy = create_proxy(select_sub_sub_procedure)
 
   for element in sub_procedure_elements:
       element.addEventListener("change", sub_procedure_elements_proxy)
 
-  def show_data():
+  def show_data(sub_sub_sub_value):
   # show all the rows
     #pd.set_option("display.max_rows", None)
     #pyscript.display(df, target="output_area")
-    generateTable(len(surgeons)+2,3,surgeons)
+    generateTable(len(surgeons)+2,4,surgeons, sub_sub_sub_value, df_surgeon)
 </py-script>
   </body>
 </html>

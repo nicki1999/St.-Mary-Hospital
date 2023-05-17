@@ -43,6 +43,7 @@ class UserInterface(QMainWindow):
         dropdown.addItem("Mutch, Jennifer")
         dropdown.addItem("Haydon, C")
         dropdown.addItem("Martinez, Adriana")
+        dropdown.addItem("Morelli M")
         dropdown.move(300, 20)
         dropdown.view().setMinimumWidth(200)
         dropdown.setFixedWidth(200)

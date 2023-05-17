@@ -32,6 +32,8 @@
   import numpy as np
   import pandas as pd
   import os
+  from collections import OrderedDict
+
 
   main_procedure_type = ''
   main_procedure_elements = js.document.getElementsByName("main_procedure")
@@ -101,18 +103,8 @@
     <!--Arthroplasty sub category-->
       <form action="#" method="get" id="sub-category">
       </form>
-
-
-
-
-
-
-      
       <table class="striped responsive-table centered " id = "table-container">
-
       </table>
-      
-
       <div id="output_area">
         
       </div>
@@ -128,11 +120,11 @@ const container = document.getElementById("sub-category");
 if (type_number == 1)
 {
 values = [
-  {value: 'Knee Replacement'},
-  {value: 'Shoulder Replacement'},
-  {value: 'Hip Replacement'},
-  {value: 'Ankle Replacement'},
-  {value: 'Elbow Replacement'},
+  {value: 'knee procedure'},
+  {value: 'shoulder procedure'},
+  {value: 'hip procedure'},
+  {value: 'ankle procedure'},
+  {value: 'elbow procedure'},
 ];
 }
 else if (type_number == 2)
@@ -174,142 +166,9 @@ sub_sub_category()
 }
 
 
-
-
-function sub_sub_category(type)
-{
-  if(type == "Arthroplasty_Knee_Replacement"){
-    values = [
-  {value: 'Total Knee Replacement'},
-  {value: 'Partial Knee Replacement'},
-];
-  }
-
-  else if (type == "Arthroplasty_Shoulder_Replacement")
-  {
-
-  }
-
-  else if(type == "Sports_Medicine_Sports_Shoulder"){
-    values = [
-  {value: 'Shoulder Instability/Repair'},
-  {value: 'Shoulder Rotator Cuff'},
-];
-  }
-  else if(type == "Sports_Medicine_Sports_Hip"){
-    values = [
-  {value: 'Shoulder Instability/Repair'},
-  {value: 'Shoulder Rotator Cuff'},
-];
-  }
-
-  // Create the HTML markup for the elements with different values and text for each
-const elementsHTML = values.map((val, index) => `
-  <p>
-    <label>
-      <input class="with-gap sub-category-input" name="sub_procedure" type="radio" value="${val.value}" />
-      <span class='black-text'>${val.value}</span>
-    </label>
-  </p>
-`).join('');
-
-// Set the contents of the container element to the HTML markup
-container.innerHTML = elementsHTML;
-}
-
-
-
-function generateTable(rows,columns ,surgeons, sub_sub_sub_value, df_surgeon) {
-
-  //covert python array to js array
-  var js_surgeons = Array.from(surgeons);
-
-  //sub_sub_sub_value
-  var js_sub_sub_sub_value = Array.from(sub_sub_sub_value);
-const keys = Object.getOwnPropertyNames(df_surgeon);
-keys.forEach(key => {
-  console.log(key);              // Output: a, b, c
-  //console.log(obj[key]);         // Output: 1, 2, 3
-});
-  // Get the HTML element where we want to append the table
-  const tableContainer = document.getElementById('table-container');
-
-  // Create a new table element
-  const table = document.createElement('table');
-
-  // Create the first row and merge all the cells
-  const titleRow = document.createElement('tr');
-  const titleCell = document.createElement('td');
-  titleCell.setAttribute('colspan', columns * 3);
-  titleCell.style.textAlign = 'center'; // Center the text
-  const titleText = document.createTextNode('Table Title');
-  const boldText = document.createElement('strong'); // Create a <strong> element
-  boldText.appendChild(titleText);
-  titleCell.appendChild(boldText);
-  titleRow.appendChild(titleCell);
-  table.appendChild(titleRow);
-
-  // Create the second row with n cells
-  const secondRow = document.createElement('tr'); 
-  
-
-  // Add a new cell at the beginning of the row called surgeons
-const newCell = document.createElement('td');
-newCell.setAttribute('colspan', 1);
-newCell.style.textAlign = 'center';
-const newCellText = document.createTextNode('Surgeon');
-newCell.appendChild(newCellText);
-secondRow.appendChild(newCell);
-
-// this is the second row
-  for (let j = 0; j < columns; j++) {
-    const cell = document.createElement('td');
-    cell.setAttribute('colspan',3);
-    cell.style.textAlign = 'center';
-    const cellText = document.createTextNode(`Row 2, Column ${j+1}`);
-    cell.appendChild(cellText);
-    secondRow.appendChild(cell);
-  }
-  table.appendChild(secondRow);
-
-  // Create the 3rd row onwards
-for (let i = 2; i < rows; i++) {
-  // Create a new row element
-  const row = document.createElement('tr');
-
-  // Create the first cell element with the surgeon's name
-  const firstCell = document.createElement('td');
-  const cellText = document.createTextNode(`${js_surgeons[i-2]}`);
-  firstCell.appendChild(cellText);
-  row.appendChild(firstCell);
-
-  // Loop through the remaining columns * 3
-  for (let j = 1; j < (columns * 3)+1; j++) {
-    // Create a new cell element
-    const cell = document.createElement('td');
-  
-    // Add some text to the cell
-    const cellText = document.createTextNode(`Row ${i+1}, Column ${j+1}`);
-    cell.appendChild(cellText);
-
-    // Add the cell to the row
-    row.appendChild(cell);
-  }
-
-  // Add the row to the table
-  table.appendChild(row);
-}
-
-
-  // Add the table to the container
-  tableContainer.appendChild(table);
-}
-
-
 </script>
 
 <py-script>
-from js import generateTable
 # I already have the csv file
 def sub_sub_category():
   sub_procedure_elements = js.document.getElementsByName("sub_procedure")
@@ -326,20 +185,75 @@ def sub_sub_category():
       for element in sub_procedure_elements:
       # This is for Arthroplasty
           if element.checked:
-             if element.value == 'Shoulder Replacement':
-                sub_sub_sub_value = ['Total Shoulder Replacement Reverse Right', 'Total Shoulder Replacement Reverse Left','Total Shoulder Procedure Left', 'Total Shoulder Procedure Right' ]
-                show_data(sub_sub_sub_value)
+             parentElement = js.document.getElementById('output_area')
+             while parentElement.firstChild: 
+                parentElement.removeChild(parentElement.firstChild)
+              
+             if element.value == 'shoulder procedure':
+                #sub_sub_sub_value = ['Total Shoulder Replacement Reverse Right', 'Total Shoulder Replacement Reverse Left','Total Shoulder Procedure Left', 'Total Shoulder Procedure Right' ]
+                show_data(df, element.value,surgeons)
+             elif element.value  == "knee procedure":
+                show_data(df, element.value,surgeons)
+             elif element.value  == "hip procedure":
+                show_data(df, element.value,surgeons)
+             elif element.value  == "ankle procedure":
+                show_data(df, element.value,surgeons)
+             elif element.value  == "elbow procedure":
+                show_data(df, element.value,surgeons)
   
   sub_procedure_elements_proxy = create_proxy(select_sub_sub_procedure)
 
   for element in sub_procedure_elements:
       element.addEventListener("change", sub_procedure_elements_proxy)
 
-  def show_data(sub_sub_sub_value):
-  # show all the rows
-    #pd.set_option("display.max_rows", None)
-    #pyscript.display(df, target="output_area")
-    generateTable(len(surgeons)+2,4,surgeons, sub_sub_sub_value, df_surgeon)
+def show_data(df, procedure_value, surgeons):
+    surgeon_list = []
+    total_count_list = []
+    delay_count_list = []
+    percentage_list = []
+
+    for surgeon in surgeons:
+        if surgeon not in surgeon_list:  # Check if surgeon already exists in the list
+            individual_surgeon = df[df['Surgeon'] == surgeon]
+            current_procedure = individual_surgeon[individual_surgeon['Procedure'].str.contains(procedure_value)]
+            procedure_total_count = len(current_procedure)
+            print('surgeon', surgeon, 'total number of', procedure_value, 'is:', procedure_total_count)
+
+            procedure_delay_count = 0
+            for delay in current_procedure['Delay'].values:
+                if float(delay) >= 180:
+                    print('this is delay:', individual_surgeon['Delay'])
+                    procedure_delay_count += 1
+
+            if procedure_total_count == 0:
+                total_percentage = 0
+            else:
+                total_percentage = procedure_delay_count / procedure_total_count
+
+            total_percentage = str("{:.2f}".format(total_percentage))
+
+            surgeon_list.append(surgeon)
+            total_count_list.append(procedure_total_count)
+            delay_count_list.append(procedure_delay_count)
+            percentage_list.append(total_percentage)
+
+    data = {
+        'Surgeon': surgeon_list,
+        'Total': total_count_list,
+        '> 6 months': delay_count_list,
+        '%': percentage_list
+    }
+    # Check if the DataFrame is not empty
+    df_result = pd.DataFrame()
+    if not df_result.empty:
+    # Empty the DataFrame
+       df_result.drop(index=df_result.index, inplace=True)
+    df_result = pd.DataFrame(data)
+    pyscript.display(df_result, target="output_area")
+
+
+
+    #generateTable(len(surgeons)+2,4,surgeons, sub_sub_sub_value, df_surgeon)
 </py-script>
   </body>
 </html>
